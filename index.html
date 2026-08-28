@@ -14,14 +14,18 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
     color: white;
     background:
-        radial-gradient(circle at 15% 10%, #35105c, transparent 35%),
-        radial-gradient(circle at 85% 90%, #003d55, transparent 35%),
+        radial-gradient(circle at 10% 10%, #35105c, transparent 35%),
+        radial-gradient(circle at 90% 90%, #003f58, transparent 35%),
         linear-gradient(135deg, #05000d, #080d20, #00141f);
 }
 
@@ -31,15 +35,15 @@ header {
 }
 
 .logo {
-    width: 150px;
-    height: 150px;
+    width: 155px;
+    height: 155px;
     object-fit: contain;
-    filter: drop-shadow(0 0 25px rgba(0, 210, 255, .35));
+    filter: drop-shadow(0 0 25px rgba(0,210,255,.4));
 }
 
 h1 {
-    margin: 10px 0 5px;
-    font-size: clamp(32px, 6vw, 50px);
+    margin: 8px 0;
+    font-size: clamp(32px, 6vw, 52px);
     background: linear-gradient(
         90deg,
         #00d9ff,
@@ -52,12 +56,13 @@ h1 {
 }
 
 .subtitle {
-    color: #c5cbe0;
+    color: #c9d0e5;
+    font-size: 16px;
 }
 
 .container {
     width: 92%;
-    max-width: 1050px;
+    max-width: 1100px;
     margin: auto;
     padding-bottom: 50px;
 }
@@ -71,15 +76,16 @@ h1 {
     box-shadow: 0 20px 60px rgba(0,0,0,.4);
 }
 
-label.title {
+.title {
     display: block;
     margin-bottom: 9px;
     font-weight: bold;
+    font-size: 18px;
 }
 
 textarea {
     width: 100%;
-    min-height: 120px;
+    min-height: 125px;
     resize: vertical;
     padding: 16px;
     border-radius: 15px;
@@ -100,10 +106,8 @@ textarea:focus {
     box-shadow: 0 0 18px rgba(0,217,255,.2);
 }
 
-/* STYLE */
-
 .section-title {
-    margin-top: 24px;
+    margin-top: 25px;
     margin-bottom: 12px;
     font-size: 18px;
     font-weight: bold;
@@ -138,20 +142,14 @@ textarea:focus {
         rgba(150,50,255,.35)
     );
     border-color: #00d9ff;
-    box-shadow: 0 0 15px rgba(0,210,255,.15);
+    box-shadow: 0 0 15px rgba(0,210,255,.18);
 }
-
-/* OPTIONS */
 
 .options {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    margin-top: 20px;
-}
-
-.option-box {
-    text-align: left;
+    margin-top: 22px;
 }
 
 .option-box label {
@@ -171,8 +169,6 @@ select {
     border: 1px solid rgba(255,255,255,.15);
     outline: none;
 }
-
-/* TOGGLES */
 
 .toggles {
     display: flex;
@@ -196,8 +192,6 @@ select {
     height: 18px;
     accent-color: #8b5cf6;
 }
-
-/* REFERENCE */
 
 .reference {
     margin-top: 22px;
@@ -238,8 +232,6 @@ select {
     border-radius: 50%;
     background: #ff3864;
 }
-
-/* BUTTONS */
 
 .buttons {
     display: flex;
@@ -289,16 +281,12 @@ button:disabled {
     background: linear-gradient(90deg,#00c878,#008cff);
 }
 
-/* STATUS */
-
 #status {
     text-align: center;
     min-height: 25px;
     margin-top: 18px;
     color: #c4cbea;
 }
-
-/* RESULT */
 
 #resultArea {
     display: none;
@@ -307,7 +295,7 @@ button:disabled {
 }
 
 .result-title {
-    font-size: 21px;
+    font-size: 22px;
     font-weight: bold;
     margin-bottom: 15px;
 }
@@ -319,10 +307,8 @@ button:disabled {
     box-shadow: 0 15px 55px rgba(0,0,0,.5);
 }
 
-/* EXAMPLES */
-
 .examples {
-    margin-top: 35px;
+    margin-top: 38px;
 }
 
 .examples h2 {
@@ -415,19 +401,15 @@ footer {
 
 <div class="panel">
 
-    <!-- PROMPT -->
-
     <label class="title" for="prompt">
         ✨ Describe your image
     </label>
 
     <textarea
         id="prompt"
-        placeholder="Describe anything you want to create..."
+        placeholder="Example: Madhura Uchiya is sitting under a tree, seeing beautiful stars in a night sky..."
     ></textarea>
 
-
-    <!-- STYLE -->
 
     <div class="section-title">
         🎨 Choose a Style
@@ -510,8 +492,6 @@ footer {
     </div>
 
 
-    <!-- OPTIONS -->
-
     <div class="options">
 
         <div class="option-box">
@@ -521,13 +501,11 @@ footer {
             </label>
 
             <select id="ratio">
-
                 <option value="1:1">1:1 Square</option>
                 <option value="16:9">16:9 Landscape</option>
                 <option value="9:16">9:16 Portrait</option>
                 <option value="4:3">4:3</option>
                 <option value="3:4">3:4</option>
-
             </select>
 
         </div>
@@ -540,19 +518,15 @@ footer {
             </label>
 
             <select id="quality">
-
                 <option value="low">Fast / Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
-
             </select>
 
         </div>
 
     </div>
 
-
-    <!-- TOGGLES -->
 
     <div class="toggles">
 
@@ -562,14 +536,12 @@ footer {
         </label>
 
         <label class="toggle">
-            <input type="checkbox" id="testMode" checked>
+            <input type="checkbox" id="testMode">
             🧪 Test Mode
         </label>
 
     </div>
 
-
-    <!-- CHARACTER REFERENCE -->
 
     <div class="reference">
 
@@ -578,7 +550,7 @@ footer {
         </strong>
 
         <div class="reference-description">
-            Upload a character image to help guide the generated image.
+            Upload an image to help guide the character's appearance.
         </div>
 
         <input
@@ -589,7 +561,7 @@ footer {
 
         <div id="referencePreviewBox">
 
-            <img id="referencePreview" alt="Reference">
+            <img id="referencePreview" alt="Character reference">
 
             <button id="removeReference">×</button>
 
@@ -597,8 +569,6 @@ footer {
 
     </div>
 
-
-    <!-- BUTTONS -->
 
     <div class="buttons">
 
@@ -614,7 +584,7 @@ footer {
             💡 Try an Example
         </button>
 
-        <a id="downloadLink" download="AI-generated-image.png">
+        <a id="downloadLink" download="AI-Image.png">
 
             <button id="downloadBtn">
                 📥 Download
@@ -628,8 +598,6 @@ footer {
     <div id="status"></div>
 
 
-    <!-- RESULT -->
-
     <div id="resultArea">
 
         <div class="result-title">
@@ -641,20 +609,18 @@ footer {
     </div>
 
 
-    <!-- EXAMPLES -->
-
     <div class="examples">
 
-        <h2>💡 Try an Example</h2>
+        <h2>💡 Examples</h2>
 
         <div class="example-grid">
 
             <div
                 class="example-card"
-                data-prompt="A mysterious anime warrior standing on a mountain at sunset, glowing energy around them"
+                data-prompt="A mysterious anime warrior sitting under a tree and looking at a beautiful starry night sky"
             >
                 <strong>🎌 Anime Warrior</strong>
-                <span>Anime character with dramatic lighting.</span>
+                <span>Anime character under a starry sky.</span>
             </div>
 
             <div
@@ -667,7 +633,7 @@ footer {
 
             <div
                 class="example-card"
-                data-prompt="A tiny magical castle floating above the clouds with waterfalls and a colorful sunset"
+                data-prompt="A magical castle floating above the clouds with waterfalls and a colorful sunset"
             >
                 <strong>🏰 Fantasy Castle</strong>
                 <span>Magical fantasy world.</span>
@@ -688,7 +654,7 @@ footer {
 
 <script>
 
-const MODEL = "gpt-image-2";
+const MODEL = "gpt-image-1-mini";
 
 let selectedStyle = "";
 let referenceData = null;
@@ -816,7 +782,7 @@ document
 });
 
 
-/* ASPECT RATIO */
+/* RATIO */
 
 function getRatio() {
 
@@ -911,16 +877,16 @@ function buildPrompt() {
 
     }
 
-
-    if (selectedStyle &&
-        stylePrompts[selectedStyle]) {
+    if (
+        selectedStyle &&
+        stylePrompts[selectedStyle]
+    ) {
 
         text +=
             ", " +
             stylePrompts[selectedStyle];
 
     }
-
 
     if (
         document.getElementById("animeMode").checked &&
@@ -932,13 +898,68 @@ function buildPrompt() {
 
     }
 
-
     return text;
 
 }
 
 
-/* GENERATE */
+/* SMART FILENAME */
+
+function createSmartFilename() {
+
+    const words =
+        promptInput.value
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2);
+
+    let baseName =
+        words
+        .map(word =>
+            word.replace(/[^a-zA-Z0-9]/g, "")
+        )
+        .filter(Boolean)
+        .join("-");
+
+    if (!baseName) {
+        baseName = "AI-Image";
+    }
+
+    /*
+     * Remember how many times this
+     * filename has been generated.
+     */
+
+    const storageKey =
+        "imageGenerator_" + baseName;
+
+    let count =
+        parseInt(
+            localStorage.getItem(storageKey) || "0",
+            10
+        );
+
+    count++;
+
+    localStorage.setItem(
+        storageKey,
+        count.toString()
+    );
+
+    if (count === 1) {
+
+        return baseName + ".png";
+
+    } else {
+
+        return baseName + "-" + count + ".png";
+
+    }
+
+}
+
+
+/* GENERATE IMAGE */
 
 async function generateImage() {
 
@@ -991,9 +1012,8 @@ async function generateImage() {
 
 
         /*
-         * Character reference image.
-         * Puter supports input_images
-         * as data URLs.
+         * Add character reference image
+         * if one was uploaded.
          */
 
         if (referenceData) {
@@ -1006,9 +1026,9 @@ async function generateImage() {
 
 
         /*
-         * Test mode.
-         * This gives a sample image
-         * without using AI credits.
+         * Test mode is OFF by default.
+         * Turn it on if you only want
+         * to test your website.
          */
 
         if (
@@ -1030,13 +1050,22 @@ async function generateImage() {
         generatedImage.src =
             image.src;
 
-
         resultArea.style.display =
             "block";
 
 
+        /*
+         * SMART DOWNLOAD NAME
+         */
+
+        const filename =
+            createSmartFilename();
+
         downloadLink.href =
             image.src;
+
+        downloadLink.download =
+            filename;
 
 
         downloadBtn.style.display =
@@ -1136,11 +1165,11 @@ clearBtn.addEventListener(
 
 const examples = [
 
-    "A mysterious anime warrior standing on a mountain at sunset, glowing energy around them",
+    "A mysterious anime warrior sitting under a tree and looking at a beautiful starry night sky",
 
-    "A futuristic cyberpunk city at night with neon signs, flying cars, rain and reflections",
+    "A futuristic cyberpunk city at night with neon signs, flying cars and rain",
 
-    "A tiny magical castle floating above the clouds with waterfalls and a colorful sunset"
+    "A magical castle floating above the clouds with waterfalls and a colorful sunset"
 
 ];
 
@@ -1204,7 +1233,7 @@ promptInput.addEventListener(
 );
 
 
-/* BUTTON */
+/* GENERATE BUTTON */
 
 generateBtn.addEventListener(
     "click",
