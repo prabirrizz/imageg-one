@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Image Generator</title>
+<link rel="icon" type="image/png" href="logo.png">
+
+<script src="https://js.puter.com/v2/"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 15% 10%, #35105c, transparent 35%),
+        radial-gradient(circle at 85% 90%, #003d55, transparent 35%),
+        linear-gradient(135deg, #05000d, #080d20, #00141f);
+}
+
+header {
+    text-align: center;
+    padding: 35px 20px 20px;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 25px rgba(0, 210, 255, .35));
+}
+
+h1 {
+    margin: 10px 0 5px;
+    font-size: clamp(32px, 6vw, 50px);
+    background: linear-gradient(
+        90deg,
+        #00d9ff,
+        #8b5cf6,
+        #ff3cac,
+        #ffb000
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: #c5cbe0;
+}
+
+.container {
+    width: 92%;
+    max-width: 1050px;
+    margin: auto;
+    padding-bottom: 50px;
+}
+
+.panel {
+    padding: 28px;
+    border-radius: 25px;
+    background: rgba(255,255,255,.065);
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+
+label.title {
+    display: block;
+    margin-bottom: 9px;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 16px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,.15);
+    outline: none;
+    background: rgba(0,0,0,.35);
+    color: white;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+textarea::placeholder {
+    color: #8d95ac;
+}
+
+textarea:focus {
+    border-color: #00d9ff;
+    box-shadow: 0 0 18px rgba(0,217,255,.2);
+}
+
+/* STYLE */
+
+.section-title {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.style-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.style-option {
+    padding: 13px 8px;
+    border-radius: 13px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    transition: .2s;
+}
+
+.style-option:hover {
+    background: rgba(255,255,255,.12);
+    transform: translateY(-2px);
+}
+
+.style-option.selected {
+    background: linear-gradient(
+        135deg,
+        rgba(0,200,255,.35),
+        rgba(150,50,255,.35)
+    );
+    border-color: #00d9ff;
+    box-shadow: 0 0 15px rgba(0,210,255,.15);
+}
+
+/* OPTIONS */
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.option-box {
+    text-align: left;
+}
+
+.option-box label {
+    display: block;
+    margin-bottom: 7px;
+    color: #ccd3e9;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+select {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: #101426;
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    outline: none;
+}
+
+/* TOGGLES */
+
+.toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+}
+
+.toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #8b5cf6;
+}
+
+/* REFERENCE */
+
+.reference {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px dashed rgba(255,255,255,.2);
+}
+
+.reference-description {
+    color: #9fa8c0;
+    font-size: 13px;
+    margin: 7px 0 13px;
+}
+
+#referencePreviewBox {
+    display: none;
+    position: relative;
+    width: fit-content;
+    margin-top: 15px;
+}
+
+#referencePreview {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 2px solid #8b5cf6;
+}
+
+#removeReference {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 29px;
+    height: 29px;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    background: #ff3864;
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+button {
+    border: none;
+    border-radius: 13px;
+    padding: 13px 21px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#generateBtn {
+    background: linear-gradient(90deg,#00bfff,#635bff);
+    padding: 15px 30px;
+    font-size: 16px;
+}
+
+#clearBtn {
+    background: #292e42;
+}
+
+#exampleBtn {
+    background: linear-gradient(90deg,#9b38ff,#ff3cac);
+}
+
+#downloadBtn {
+    display: none;
+    background: linear-gradient(90deg,#00c878,#008cff);
+}
+
+/* STATUS */
+
+#status {
+    text-align: center;
+    min-height: 25px;
+    margin-top: 18px;
+    color: #c4cbea;
+}
+
+/* RESULT */
+
+#resultArea {
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#generatedImage {
+    max-width: 100%;
+    max-height: 750px;
+    border-radius: 20px;
+    box-shadow: 0 15px 55px rgba(0,0,0,.5);
+}
+
+/* EXAMPLES */
+
+.examples {
+    margin-top: 35px;
+}
+
+.examples h2 {
+    text-align: center;
+}
+
+.example-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+}
+
+.example-card {
+    padding: 17px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.example-card:hover {
+    background: rgba(255,255,255,.1);
+    transform: translateY(-3px);
+}
+
+.example-card strong {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.example-card span {
+    color: #aab2c8;
+    font-size: 13px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #687089;
+    font-size: 13px;
+}
+
+@media(max-width:750px) {
+
+    .style-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .options {
+        grid-template-columns: 1fr;
+    }
+
+    .example-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .logo {
+        width: 120px;
+        height: 120px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <img src="logo.png" class="logo" alt="AI Image Generator">
+
+    <h1>AI Image Generator</h1>
+
+    <div class="subtitle">
+        Turn your imagination into amazing images ✨
+    </div>
+
+</header>
+
+
+<div class="container">
+
+<div class="panel">
+
+    <!-- PROMPT -->
+
+    <label class="title" for="prompt">
+        ✨ Describe your image
+    </label>
+
+    <textarea
+        id="prompt"
+        placeholder="Describe anything you want to create..."
+    ></textarea>
+
+
+    <!-- STYLE -->
+
+    <div class="section-title">
+        🎨 Choose a Style
+    </div>
+
+    <div class="style-grid">
+
+        <div class="style-option selected" data-style="">
+            ✨ None
+        </div>
+
+        <div class="style-option" data-style="anime">
+            🎌 Anime
+        </div>
+
+        <div class="style-option" data-style="3d">
+            🧊 3D
+        </div>
+
+        <div class="style-option" data-style="2d">
+            🖌️ 2D Art
+        </div>
+
+        <div class="style-option" data-style="sketch">
+            ✏️ Sketch
+        </div>
+
+        <div class="style-option" data-style="photorealistic">
+            📷 Photo
+        </div>
+
+        <div class="style-option" data-style="cinematic">
+            🎬 Cinematic
+        </div>
+
+        <div class="style-option" data-style="digital">
+            💻 Digital Art
+        </div>
+
+        <div class="style-option" data-style="watercolor">
+            🌈 Watercolor
+        </div>
+
+        <div class="style-option" data-style="oil">
+            🖼️ Oil Painting
+        </div>
+
+        <div class="style-option" data-style="pixel">
+            👾 Pixel Art
+        </div>
+
+        <div class="style-option" data-style="fantasy">
+            🏰 Fantasy
+        </div>
+
+        <div class="style-option" data-style="comic">
+            💥 Comic Book
+        </div>
+
+        <div class="style-option" data-style="cyberpunk">
+            🌃 Cyberpunk
+        </div>
+
+        <div class="style-option" data-style="cartoon">
+            🧸 Cartoon
+        </div>
+
+        <div class="style-option" data-style="ink">
+            🖋️ Ink
+        </div>
+
+        <div class="style-option" data-style="surreal">
+            🌀 Surreal
+        </div>
+
+        <div class="style-option" data-style="scifi">
+            🚀 Sci-Fi
+        </div>
+
+    </div>
+
+
+    <!-- OPTIONS -->
+
+    <div class="options">
+
+        <div class="option-box">
+
+            <label for="ratio">
+                📐 Aspect Ratio
+            </label>
+
+            <select id="ratio">
+
+                <option value="1:1">1:1 Square</option>
+                <option value="16:9">16:9 Landscape</option>
+                <option value="9:16">9:16 Portrait</option>
+                <option value="4:3">4:3</option>
+                <option value="3:4">3:4</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="option-box">
+
+            <label for="quality">
+                ⚡ Quality
+            </label>
+
+            <select id="quality">
+
+                <option value="low">Fast / Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOGGLES -->
+
+    <div class="toggles">
+
+        <label class="toggle">
+            <input type="checkbox" id="animeMode">
+            🎌 Anime Mode
+        </label>
+
+        <label class="toggle">
+            <input type="checkbox" id="testMode" checked>
+            🧪 Test Mode
+        </label>
+
+    </div>
+
+
+    <!-- CHARACTER REFERENCE -->
+
+    <div class="reference">
+
+        <strong>
+            🧑 Character Reference Image
+        </strong>
+
+        <div class="reference-description">
+            Upload a character image to help guide the generated image.
+        </div>
+
+        <input
+            type="file"
+            id="referenceInput"
+            accept="image/png,image/jpeg,image/webp"
+        >
+
+        <div id="referencePreviewBox">
+
+            <img id="referencePreview" alt="Reference">
+
+            <button id="removeReference">×</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <div class="buttons">
+
+        <button id="generateBtn">
+            🎨 Generate Image
+        </button>
+
+        <button id="clearBtn">
+            🧹 Clear
+        </button>
+
+        <button id="exampleBtn">
+            💡 Try an Example
+        </button>
+
+        <a id="downloadLink" download="AI-generated-image.png">
+
+            <button id="downloadBtn">
+                📥 Download
+            </button>
+
+        </a>
+
+    </div>
+
+
+    <div id="status"></div>
+
+
+    <!-- RESULT -->
+
+    <div id="resultArea">
+
+        <div class="result-title">
+            ✨ Your Image
+        </div>
+
+        <img id="generatedImage" alt="Generated image">
+
+    </div>
+
+
+    <!-- EXAMPLES -->
+
+    <div class="examples">
+
+        <h2>💡 Try an Example</h2>
+
+        <div class="example-grid">
+
+            <div
+                class="example-card"
+                data-prompt="A mysterious anime warrior standing on a mountain at sunset, glowing energy around them"
+            >
+                <strong>🎌 Anime Warrior</strong>
+                <span>Anime character with dramatic lighting.</span>
+            </div>
+
+            <div
+                class="example-card"
+                data-prompt="A futuristic cyberpunk city at night with neon signs, flying cars and rain"
+            >
+                <strong>🌃 Cyberpunk City</strong>
+                <span>Neon futuristic city.</span>
+            </div>
+
+            <div
+                class="example-card"
+                data-prompt="A tiny magical castle floating above the clouds with waterfalls and a colorful sunset"
+            >
+                <strong>🏰 Fantasy Castle</strong>
+                <span>Magical fantasy world.</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+
+<footer>
+    AI Image Generator • Powered by Puter.js
+</footer>
+
+
+<script>
+
+const MODEL = "gpt-image-2";
+
+let selectedStyle = "";
+let referenceData = null;
+
+
+/* ELEMENTS */
+
+const promptInput =
+    document.getElementById("prompt");
+
+const generateBtn =
+    document.getElementById("generateBtn");
+
+const clearBtn =
+    document.getElementById("clearBtn");
+
+const exampleBtn =
+    document.getElementById("exampleBtn");
+
+const status =
+    document.getElementById("status");
+
+const generatedImage =
+    document.getElementById("generatedImage");
+
+const resultArea =
+    document.getElementById("resultArea");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+const downloadLink =
+    document.getElementById("downloadLink");
+
+const referenceInput =
+    document.getElementById("referenceInput");
+
+const referencePreview =
+    document.getElementById("referencePreview");
+
+const referencePreviewBox =
+    document.getElementById("referencePreviewBox");
+
+
+/* STYLE SELECTION */
+
+document
+.querySelectorAll(".style-option")
+.forEach(option => {
+
+    option.addEventListener("click", () => {
+
+        document
+        .querySelectorAll(".style-option")
+        .forEach(x =>
+            x.classList.remove("selected")
+        );
+
+        option.classList.add("selected");
+
+        selectedStyle =
+            option.dataset.style;
+
+    });
+
+});
+
+
+/* REFERENCE IMAGE */
+
+referenceInput.addEventListener(
+    "change",
+    function() {
+
+        const file = this.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+
+            alert("Please select an image.");
+
+            this.value = "";
+
+            return;
+        }
+
+        const reader =
+            new FileReader();
+
+        reader.onload = function(e) {
+
+            referenceData =
+                e.target.result;
+
+            referencePreview.src =
+                referenceData;
+
+            referencePreviewBox.style.display =
+                "block";
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/* REMOVE REFERENCE */
+
+document
+.getElementById("removeReference")
+.addEventListener("click", () => {
+
+    referenceData = null;
+
+    referenceInput.value = "";
+
+    referencePreview.src = "";
+
+    referencePreviewBox.style.display =
+        "none";
+
+});
+
+
+/* ASPECT RATIO */
+
+function getRatio() {
+
+    const value =
+        document.getElementById("ratio").value;
+
+    const ratios = {
+
+        "1:1": {w:1, h:1},
+        "16:9": {w:16, h:9},
+        "9:16": {w:9, h:16},
+        "4:3": {w:4, h:3},
+        "3:4": {w:3, h:4}
+
+    };
+
+    return ratios[value];
+
+}
+
+
+/* STYLE PROMPTS */
+
+const stylePrompts = {
+
+    anime:
+        "anime illustration, Japanese animation-inspired artwork, expressive characters, detailed anime art",
+
+    "3d":
+        "high quality 3D render, detailed 3D modeling, realistic materials, professional lighting",
+
+    "2d":
+        "beautiful 2D digital illustration, clean shapes, detailed artwork",
+
+    sketch:
+        "detailed pencil sketch, graphite drawing, hand-drawn lines, artistic shading",
+
+    photorealistic:
+        "photorealistic photography, realistic textures, natural lighting",
+
+    cinematic:
+        "cinematic composition, dramatic movie lighting, professional cinematography",
+
+    digital:
+        "high quality digital artwork, detailed digital painting",
+
+    watercolor:
+        "beautiful watercolor painting, soft brush strokes, paper texture",
+
+    oil:
+        "traditional oil painting, visible brush strokes, rich artistic texture",
+
+    pixel:
+        "detailed pixel art, crisp pixels, retro game aesthetic",
+
+    fantasy:
+        "epic fantasy artwork, magical atmosphere, highly detailed",
+
+    comic:
+        "comic book artwork, bold ink lines, dynamic composition",
+
+    cyberpunk:
+        "cyberpunk artwork, neon lights, futuristic city atmosphere",
+
+    cartoon:
+        "cute colorful cartoon illustration, expressive characters",
+
+    ink:
+        "black ink illustration, detailed line art, artistic ink drawing",
+
+    surreal:
+        "surreal dreamlike artwork, imaginative impossible scenery",
+
+    scifi:
+        "science fiction artwork, futuristic technology, cinematic space atmosphere"
+
+};
+
+
+/* BUILD PROMPT */
+
+function buildPrompt() {
+
+    let text =
+        promptInput.value.trim();
+
+    if (!text) {
+
+        throw new Error(
+            "Please describe the image first."
+        );
+
+    }
+
+
+    if (selectedStyle &&
+        stylePrompts[selectedStyle]) {
+
+        text +=
+            ", " +
+            stylePrompts[selectedStyle];
+
+    }
+
+
+    if (
+        document.getElementById("animeMode").checked &&
+        selectedStyle !== "anime"
+    ) {
+
+        text +=
+            ", anime-inspired visual style, detailed anime character design";
+
+    }
+
+
+    return text;
+
+}
+
+
+/* GENERATE */
+
+async function generateImage() {
+
+    let finalPrompt;
+
+    try {
+
+        finalPrompt =
+            buildPrompt();
+
+    } catch(error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+
+    generateBtn.disabled = true;
+    clearBtn.disabled = true;
+    exampleBtn.disabled = true;
+
+    generateBtn.textContent =
+        "⏳ Generating...";
+
+    status.textContent =
+        "✨ Creating your image...";
+
+    resultArea.style.display =
+        "none";
+
+    downloadBtn.style.display =
+        "none";
+
+
+    try {
+
+        const options = {
+
+            model: MODEL,
+
+            quality:
+                document.getElementById("quality").value,
+
+            ratio:
+                getRatio()
+
+        };
+
+
+        /*
+         * Character reference image.
+         * Puter supports input_images
+         * as data URLs.
+         */
+
+        if (referenceData) {
+
+            options.input_images = [
+                referenceData
+            ];
+
+        }
+
+
+        /*
+         * Test mode.
+         * This gives a sample image
+         * without using AI credits.
+         */
+
+        if (
+            document.getElementById("testMode").checked
+        ) {
+
+            options.test_mode = true;
+
+        }
+
+
+        const image =
+            await puter.ai.txt2img(
+                finalPrompt,
+                options
+            );
+
+
+        generatedImage.src =
+            image.src;
+
+
+        resultArea.style.display =
+            "block";
+
+
+        downloadLink.href =
+            image.src;
+
+
+        downloadBtn.style.display =
+            "inline-block";
+
+
+        status.textContent =
+            document.getElementById("testMode").checked
+            ? "🧪 Test image created!"
+            : "✅ Image generated successfully!";
+
+
+        resultArea.scrollIntoView({
+            behavior: "smooth"
+        });
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        status.textContent =
+            "❌ Generation failed.";
+
+        alert(
+            "Image generation failed:\n\n" +
+            (error.message || error)
+        );
+
+    }
+
+
+    generateBtn.disabled = false;
+    clearBtn.disabled = false;
+    exampleBtn.disabled = false;
+
+    generateBtn.textContent =
+        "🎨 Generate Image";
+
+}
+
+
+/* CLEAR */
+
+clearBtn.addEventListener(
+    "click",
+    () => {
+
+        promptInput.value = "";
+
+        selectedStyle = "";
+
+        document
+        .querySelectorAll(".style-option")
+        .forEach(x =>
+            x.classList.remove("selected")
+        );
+
+        document
+        .querySelector(".style-option")
+        .classList.add("selected");
+
+        document.getElementById("ratio").value =
+            "1:1";
+
+        document.getElementById("quality").value =
+            "low";
+
+        document.getElementById("animeMode").checked =
+            false;
+
+        generatedImage.src = "";
+
+        resultArea.style.display =
+            "none";
+
+        downloadBtn.style.display =
+            "none";
+
+        status.textContent =
+            "";
+
+        referenceData = null;
+
+        referenceInput.value = "";
+
+        referencePreview.src = "";
+
+        referencePreviewBox.style.display =
+            "none";
+
+    }
+);
+
+
+/* TRY AN EXAMPLE */
+
+const examples = [
+
+    "A mysterious anime warrior standing on a mountain at sunset, glowing energy around them",
+
+    "A futuristic cyberpunk city at night with neon signs, flying cars, rain and reflections",
+
+    "A tiny magical castle floating above the clouds with waterfalls and a colorful sunset"
+
+];
+
+exampleBtn.addEventListener(
+    "click",
+    () => {
+
+        promptInput.value =
+            examples[
+                Math.floor(
+                    Math.random() *
+                    examples.length
+                )
+            ];
+
+        promptInput.focus();
+
+    }
+);
+
+
+/* EXAMPLE CARDS */
+
+document
+.querySelectorAll(".example-card")
+.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            promptInput.value =
+                card.dataset.prompt;
+
+            promptInput.focus();
+
+        }
+    );
+
+});
+
+
+/* ENTER TO GENERATE */
+
+promptInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            generateImage();
+
+        }
+
+    }
+);
+
+
+/* BUTTON */
+
+generateBtn.addEventListener(
+    "click",
+    generateImage
+);
+
+</script>
+
+</body>
+</html>
