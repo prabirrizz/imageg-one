@@ -1464,11 +1464,114 @@ window.ImagegAuth.onAuthStateChanged(
 
     }
 );
-</script>
+</script> 
+<script type="module">
+
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const resetBtn = document.getElementById("resetBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+
+const authForm = document.getElementById("authForm");
+const loggedInBox = document.getElementById("loggedInBox");
+const loggedInText = document.getElementById("loggedInText");
+const authStatus = document.getElementById("authStatus");
+
+signupBtn.onclick = async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        authStatus.textContent = "⚠️ Enter email and password.";
+        return;
+    }
+
+    try {
+
+        await window.ImagegAuth.createUserWithEmailAndPassword(
+            window.ImagegAuth.auth,
+            email,
+            password
+        );
+
+        authStatus.textContent = "✅ Account created!";
+
+    } catch (error) {
+
+        authStatus.textContent = "❌ " + error.message;
+
+    }
+
+};
+
+
+loginBtn.onclick = async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        authStatus.textContent = "⚠️ Enter email and password.";
+        return;
+    }
+
+    try {
+
+        await window.ImagegAuth.signInWithEmailAndPassword(
+            window.ImagegAuth.auth,
+            email,
+            password
+        );
+
+        authStatus.textContent = "✅ Login successful!";
+
+    } catch (error) {
+
+        authStatus.textContent = "❌ " + error.message;
+
+    }
+
+};
+
+
+logoutBtn.onclick = async () => {
+
+    await window.ImagegAuth.signOut(
+        window.ImagegAuth.auth
+    );
+
+};
+
+
+window.ImagegAuth.onAuthStateChanged(
+    window.ImagegAuth.auth,
+    user => {
+
+        if (user) {
+
+            authForm.style.display = "none";
+
+            loggedInBox.style.display = "block";
+
+            loggedInText.textContent =
+                "🟢 Logged in as " + user.email;
+
+        } else {
+
+            authForm.style.display = "block";
+
+            loggedInBox.style.display = "none";
+
+        }
+
+    }
+);
+
+</script>    
 
 </body>
 </html>  
-</script>
-
-</body>
-</html>
