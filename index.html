@@ -1319,7 +1319,135 @@ generateBtn.addEventListener(
     onAuthStateChanged
   };
 
+  console.log("🔥 Imageg Firebase connected!"); 
   console.log("🔥 Imageg Firebase connected!");
+</script>
+
+<script>
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const authStatus = document.getElementById("authStatus");
+
+signupBtn.addEventListener("click", async function () {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        authStatus.textContent = "⚠️ Enter your email and password.";
+        return;
+    }
+
+    try {
+
+        await window.ImagegAuth.createUserWithEmailAndPassword(
+            window.ImagegAuth.auth,
+            email,
+            password
+        );
+
+        authStatus.textContent =
+            "✅ Account created successfully!";
+
+    } catch (error) {
+
+        console.error("SIGNUP ERROR:", error);
+
+        authStatus.textContent =
+            "❌ " + error.message;
+
+    }
+
+});
+
+
+loginBtn.addEventListener("click", async function () {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+        authStatus.textContent = "⚠️ Enter your email and password.";
+        return;
+    }
+
+    try {
+
+        await window.ImagegAuth.signInWithEmailAndPassword(
+            window.ImagegAuth.auth,
+            email,
+            password
+        );
+
+        authStatus.textContent =
+            "✅ Logged in successfully!";
+
+    } catch (error) {
+
+        console.error("LOGIN ERROR:", error);
+
+        authStatus.textContent =
+            "❌ " + error.message;
+
+    }
+
+});
+
+
+logoutBtn.addEventListener("click", async function () {
+
+    try {
+
+        await window.ImagegAuth.signOut(
+            window.ImagegAuth.auth
+        );
+
+        authStatus.textContent =
+            "👋 Logged out.";
+
+    } catch (error) {
+
+        console.error("LOGOUT ERROR:", error);
+
+        authStatus.textContent =
+            "❌ " + error.message;
+
+    }
+
+});
+
+
+window.ImagegAuth.onAuthStateChanged(
+    window.ImagegAuth.auth,
+    function (user) {
+
+        if (user) {
+
+            authStatus.textContent =
+                "🟢 Logged in as " + user.email;
+
+            signupBtn.style.display = "none";
+            loginBtn.style.display = "none";
+            logoutBtn.style.display = "inline-block";
+
+        } else {
+
+            signupBtn.style.display = "inline-block";
+            loginBtn.style.display = "inline-block";
+            logoutBtn.style.display = "none";
+
+        }
+
+    }
+);
+</script>
+
+</body>
+</html>  
 </script>
 
 </body>
