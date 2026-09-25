@@ -1251,7 +1251,39 @@ generateBtn.addEventListener(
     "click",
     generateImage
 );
+</script> 
+<!-- IMAGEG FIREBASE AUTH -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyC00s_FExEQQDLvcZ3JM7aM3nnRKENRdKI",
+    authDomain: "imageg-64b92.firebaseapp.com",
+    projectId: "imageg-64b92",
+    storageBucket: "imageg-64b92.firebasestorage.app",
+    messagingSenderId: "748649471969",
+    appId: "1:748649471969:web:c2c694f74a35cafd293ca0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.ImagegAuth = {
+    auth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  };
+
+  console.log("🔥 Imageg Firebase connected!");
 </script>
 
 </body>
